@@ -6,7 +6,81 @@ const num=v=>Number(String(v||"").replace(",","."))||0;
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 function fallbackCover(v){return v||"assets/covers/placeholder.svg"}
 function rowToFanfic(r){const scores=Object.fromEntries(SCORE_COLUMNS.map(k=>[k,num(r[k])]));let total=num(r[COL.total]);if(!total){const vals=Object.values(scores);total=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length*10)}return{id:r[COL.id]||String(Date.now()+Math.random()),title:r[COL.title],author:r[COL.author],link:r[COL.link],cover:fallbackCover(r[COL.cover]),status:r[COL.status],language:r[COL.language],size:r[COL.size],chapters:r[COL.chapters],workStatus:r[COL.workStatus],scores,total,hangover:num(r[COL.hangover]),nominations:splitList(r[COL.nominations]),tags:splitList(r[COL.tags]),quote:r[COL.quote],review:r[COL.review],spoiler:r[COL.spoiler],scene:r[COL.scene],why:r[COL.why],disliked:r[COL.disliked]}}
-async function loadData(){const status=document.querySelector("#syncStatus"),setup=document.querySelector("#setup"),url=window.DRAMIONE_CONFIG?.googleSheetJsonUrl?.trim();if(!url){status.textContent="JSON не подключён";setup.classList.remove("hidden");setup.innerHTML="<h3>Не указана JSON-ссылка</h3><p>Проверь файл <code>config.js</code>.</p>";return}try{const response=await fetch(url,{cache:"no-store",redirect:"follow"});if(!response.ok)throw new Error(`HTTP ${response.status}`);const rows=await response.json();if(!Array.isArray(rows))throw new Error("Apps Script вернул не массив");library=rows.filter(r=>r&&r[COL.title]).filter(r=>String(r[COL.visible]||"Да").trim().toLowerCase()!=="нет").map(rowToFanfic);setup.classList.add("hidden");status.textContent=`Загружено: ${library.length}`;render()}catch(error){console.error("Ошибка загрузки JSON:",error);status.textContent="Ошибка загрузки";setup.classList.remove("hidden");setup.innerHTML=`<h3>Не удалось загрузить данные</h3><p>${safe(error.message)}</p><p>Проверь JSON-ссылку в <code>config.js</code>.</p>`}}
+function loadData() {
+  const status = document.querySelector("#syncStatus");
+  const setup = document.querySelector("#setup");
+  const url =
+    window.DRAMIONE_CONFIG?.googleSheetJsonUrl?.trim();
+
+  if (!url) {
+    status.textContent = "JSON не подключён";
+    setup.classList.remove("hidden");
+    setup.innerHTML = `
+      <h3>Не указана ссылка</h3>
+      <p>Проверь файл <code>config.js</code>.</p>
+    `;
+    return;
+  }
+
+  status.textContent = "Загрузка данных…";
+
+  window.dramioneCallback = function (rows) {
+    try {
+      if (!Array.isArray(rows)) {
+        throw new Error("Получены данные неверного формата");
+      }
+
+      library = rows
+        .filter(row => row && row[COL.title])
+        .filter(row => {
+          const visible = String(
+            row[COL.visible] || "Да"
+          ).trim().toLowerCase();
+
+          return visible !== "нет";
+        })
+        .map(rowToFanfic);
+
+      setup.classList.add("hidden");
+      status.textContent = `Загружено: ${library.length}`;
+
+      render();
+    } catch (error) {
+      showLoadError(error);
+    } finally {
+      delete window.dramioneCallback;
+    }
+  };
+
+  const script = document.createElement("script");
+
+  script.src =
+    url +
+    (url.includes("?") ? "&" : "?") +
+    "callback=dramioneCallback&t=" +
+    Date.now();
+
+  script.onerror = function () {
+    showLoadError(
+      new Error("Не удалось подключиться к Apps Script")
+    );
+  };
+
+  document.body.appendChild(script);
+
+  function showLoadError(error) {
+    console.error("Ошибка загрузки:", error);
+
+    status.textContent = "Ошибка загрузки";
+    setup.classList.remove("hidden");
+
+    setup.innerHTML = `
+      <h3>Не удалось загрузить данные</h3>
+      <p>${safe(error.message)}</p>
+      <p>Проверь развертывание Apps Script.</p>
+    `;
+  }
+}
 function updateStats(items){document.querySelector("#count").textContent=items.length;document.querySelector("#average").textContent=items.length?Math.round(items.reduce((s,x)=>s+x.total,0)/items.length)+"/100":"—";document.querySelector("#hangoverMax").textContent=items.length?Math.max(...items.map(x=>x.hangover))+"/10":"—"}
 function card(f){return `<article class="card"><div class="cover" style="--cover:url('${safe(f.cover)}')"><div class="score">${f.total}/100</div><div class="cover-copy"><h3>${safe(f.title)}</h3><p>${safe(f.author)}</p></div></div><div class="card-body"><div class="meta"><span>${safe(f.status||"Без статуса")}</span><span>Похмелье ${f.hangover}/10</span></div><div class="chips">${f.tags.slice(0,4).map(x=>`<span class="chip">${safe(x)}</span>`).join("")}</div><button class="open" data-id="${safe(f.id)}">Подробнее</button></div></article>`}
 function filtered(){const q=document.querySelector("#search").value.trim().toLowerCase(),status=document.querySelector("#status").value,sort=document.querySelector("#sort").value;let items=library.filter(f=>{const hay=[f.title,f.author,...f.tags,...f.nominations].join(" ").toLowerCase();return(!q||hay.includes(q))&&(!status||f.status===status)});items.sort((a,b)=>sort==="title"?a.title.localeCompare(b.title,"ru"):sort==="hangover"?b.hangover-a.hangover:b.total-a.total);return items}
