@@ -12,65 +12,23 @@
 </head>
 <body>
 <header class="hero">
-  <nav class="shell nav">
-    <a class="brand" href="#">Dramione Library</a>
-    <button id="themeButton" class="icon-button" aria-label="Переключить тему">☾</button>
-  </nav>
-  <div class="shell hero-copy">
-    <p class="eyebrow">Личная библиотека Марии</p>
-    <h1>Фанфики, которые остаются с тобой после последней главы</h1>
-    <p>Оценки, номинации, цитаты и тот самый эффект книжного похмелья.</p>
-    <a class="button" href="#library">Открыть библиотеку</a>
-  </div>
+  <nav class="shell nav"><a class="brand" href="#">Dramione Library</a><button id="themeButton" class="icon-button" aria-label="Переключить тему">☾</button></nav>
+  <div class="shell hero-copy"><p class="eyebrow">Личная библиотека Марии</p><h1>Фанфики, которые остаются с тобой после последней главы</h1><p>Оценки, номинации, цитаты и тот самый эффект книжного похмелья.</p><a class="button" href="#library">Открыть библиотеку</a></div>
 </header>
-
 <main>
-  <section class="shell stats">
-    <article><strong id="count">—</strong><span>фанфиков</span></article>
-    <article><strong id="average">—</strong><span>средняя оценка</span></article>
-    <article><strong id="hangoverMax">—</strong><span>макс. похмелье</span></article>
-  </section>
-
+  <section class="shell stats"><article><strong id="count">—</strong><span>фанфиков</span></article><article><strong id="average">—</strong><span>средняя оценка</span></article><article><strong id="hangoverMax">—</strong><span>макс. похмелье</span></article></section>
   <section id="library" class="shell library">
-    <div class="heading">
-      <div><p class="eyebrow">Каталог</p><h2>Моя коллекция</h2></div>
-      <p id="syncStatus" class="sync-status">Загрузка данных…</p>
-    </div>
-
+    <div class="heading"><div><p class="eyebrow">Каталог</p><h2>Моя коллекция</h2></div><p id="syncStatus" class="sync-status">Загрузка данных…</p></div>
     <div class="controls">
       <label><span>Поиск</span><input id="search" type="search" placeholder="Название, автор или тег"></label>
-      <label><span>Статус</span>
-        <select id="status">
-          <option value="">Все</option>
-          <option>Хочу прочитать</option><option>Читаю</option>
-          <option>Прочитано</option><option>Брошено</option>
-        </select>
-      </label>
-      <label><span>Сортировка</span>
-        <select id="sort">
-          <option value="score">Сначала лучшие</option>
-          <option value="hangover">По книжному похмелью</option>
-          <option value="title">По названию</option>
-        </select>
-      </label>
+      <label><span>Статус</span><select id="status"><option value="">Все</option><option>Хочу прочитать</option><option>Читаю</option><option>Прочитано</option><option>Брошено</option></select></label>
+      <label><span>Сортировка</span><select id="sort"><option value="score">Сначала лучшие</option><option value="hangover">По книжному похмелью</option><option value="title">По названию</option></select></label>
     </div>
-
-    <div id="cards" class="cards"></div>
-    <div id="empty" class="empty hidden">Ничего не найдено.</div>
-    <div id="setup" class="setup hidden">
-      <h3>Сайт готов — осталось подключить таблицу</h3>
-      <p>Открой файл <code>config.js</code> и вставь опубликованную CSV-ссылку Google Таблицы.</p>
-    </div>
+    <div id="cards" class="cards"></div><div id="empty" class="empty hidden">Ничего не найдено.</div><div id="setup" class="setup hidden"></div>
   </section>
 </main>
-
-<dialog id="modal" class="modal">
-  <button id="closeModal" class="modal-close" aria-label="Закрыть">×</button>
-  <div id="modalContent"></div>
-</dialog>
-
-<footer><div class="shell">Dramione Library · версия 1.0</div></footer>
-<script src="config.js"></script>
-<script src="script.js"></script>
+<dialog id="modal" class="modal"><button id="closeModal" class="modal-close" aria-label="Закрыть">×</button><div id="modalContent"></div></dialog>
+<footer><div class="shell">Dramione Library · версия 1.1 JSON</div></footer>
+<script src="config.js"></script><script src="script.js"></script>
 </body>
 </html>
