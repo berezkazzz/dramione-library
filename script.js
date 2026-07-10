@@ -88,7 +88,6 @@ async function loadData() {
     `;
   }
 }
-}
 function updateStats(items){
  document.querySelector("#count").textContent=items.length;
  document.querySelector("#average").textContent=items.length?Math.round(items.reduce((s,x)=>s+x.total,0)/items.length)+"/100":"—";
