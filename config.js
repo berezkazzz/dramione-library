@@ -2,5 +2,5 @@
 // Пример:
 // https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?gid=0&single=true&output=csv
 window.DRAMIONE_CONFIG = {
-  googleSheetCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSyJFF6h2ozA2bOqXH4Ef9XxqBfojyrlSTb8jyk13GdLPeCxsMbk6l3XGsGAPxpE8GvbQCJh0EwfX6F/pub?gid=749796667&single=true&output=csv"
+  googleSheetJsonUrl: "https://script.google.com/macros/s/AKfycbzEXA-sLyhAyf7LHJh_SOxG7KQrCVhxWBfnhOYBg4foCyrEBE5YbV-sSD7dk2YsT1N1UQ/exec"
 };
