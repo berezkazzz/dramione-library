@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0c2118"/><stop offset="1" stop-color="#315b49"/></linearGradient></defs>
+<rect width="1200" height="900" fill="url(#g)"/>
+<circle cx="975" cy="160" r="180" fill="#b99557" opacity=".17"/>
+<path d="M260 645c170-250 370-338 680-258-177 35-302 136-407 303-75-52-163-67-273-45Z" fill="#e7dfcf" opacity=".14"/>
+<text x="80" y="690" fill="#f4f0e8" font-family="Georgia,serif" font-size="92">Dramione</text>
+<text x="84" y="755" fill="#d3b477" font-family="Arial,sans-serif" font-size="28" letter-spacing="9">LIBRARY</text>
+</svg>
