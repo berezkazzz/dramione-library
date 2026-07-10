@@ -46,26 +46,48 @@ function rowToFanfic(r){
   review:r[COL.review],spoiler:r[COL.spoiler],scene:r[COL.scene],why:r[COL.why],disliked:r[COL.disliked]
  };
 }
-async function loadData(){
- const url=window.DRAMIONE_CONFIG?.googleSheetCsvUrl?.trim();
- const status=document.querySelector("#syncStatus");
- if(!url){
-  status.textContent="Таблица не подключена";
-  document.querySelector("#setup").classList.remove("hidden");
-  return;
- }
- try{
-  const res=await fetch(url,{cache:"no-store"});
-  if(!res.ok)throw new Error("HTTP "+res.status);
-  const rows=parseCSV(await res.text());
-  library=rows.filter(r=>r[COL.title] && (r[COL.visible]||"Да").toLowerCase()!=="нет").map(rowToFanfic);
-  status.textContent="Данные загружены из Google Таблицы";
-  render();
- }catch(err){
-  console.error(err);status.textContent="Не удалось загрузить таблицу";
-  document.querySelector("#setup").classList.remove("hidden");
-  document.querySelector("#setup").innerHTML="<h3>Ошибка загрузки</h3><p>Проверь публикацию таблицы и CSV-ссылку в <code>config.js</code>.</p>";
- }
+async function loadData() {
+  const url = window.DRAMIONE_CONFIG?.googleSheetJsonUrl?.trim();
+  const status = document.querySelector("#syncStatus");
+
+  if (!url) {
+    status.textContent = "JSON не подключён";
+    document.querySelector("#setup").classList.remove("hidden");
+    return;
+  }
+
+  try {
+    const response = await fetch(url, {
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error(`Ошибка HTTP: ${response.status}`);
+    }
+
+    const rows = await response.json();
+
+    if (!Array.isArray(rows)) {
+      throw new Error("Сервер вернул данные в неверном формате");
+    }
+
+    library = rows
+      .filter(row => row[COL.title])
+      .map(rowToFanfic);
+
+    status.textContent = "Данные загружены из Google Таблицы";
+    render();
+  } catch (error) {
+    console.error("Ошибка загрузки JSON:", error);
+
+    status.textContent = "Не удалось загрузить данные";
+    document.querySelector("#setup").classList.remove("hidden");
+    document.querySelector("#setup").innerHTML = `
+      <h3>Ошибка загрузки</h3>
+      <p>Проверь ссылку Apps Script в файле <code>config.js</code>.</p>
+    `;
+  }
+}
 }
 function updateStats(items){
  document.querySelector("#count").textContent=items.length;
